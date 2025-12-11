@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIONS CUP - Torneo de Fútbol (10 Equipos)</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de iconos (Lucide Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Definición de la paleta de colores basada en el logo */
+        :root {
+            --color-primary: #D4AF37; /* Gold/Oro principal */
+            --color-secondary: #C0C0C0; /* Plata para contraste */
+            --color-background: #0A0A0A; /* Negro profundo */
+        }
+        .text-gold { color: var(--color-primary); }
+        .bg-gold-light { background-color: #fce396; }
+        .bg-black-deep { background-color: var(--color-background); }
+        .border-gold { border-color: var(--color-primary); }
+        .shadow-gold { box-shadow: 0 4px 6px -1px rgba(212, 175, 55, 0.4), 0 2px 4px -2px rgba(212, 175, 55, 0.4); }
+        
+        /* Estilos generales */
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-background); color: var(--color-secondary); }
+        
+        /* Estilo para la navegación activa */
+        .tab-active {
+            border-bottom: 2px solid var(--color-primary);
+            color: var(--color-primary) !important;
+            font-weight: 600;
+        }
+
+        /* Ocultar contenido por defecto */
+        .tab-content { display: none; }
+        
+        /* Estilo para tablas */
+        th, td { padding: 0.75rem; }
+        .table-header { background-color: rgba(212, 175, 55, 0.1); }
+        .table-row-hover:hover { background-color: rgba(212, 175, 55, 0.05); }
+
+    </style>
+</head>
+<body class="min-h-screen bg-black-deep">
+
+    <!-- CABECERA y NAVEGACIÓN PRINCIPAL -->
+    <header class="bg-black-deep sticky top-0 z-10 border-b border-gray-800">
+        <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between">
+            <!-- Logo y Título -->
+            <div class="flex items-center space-x-3 mb-4 sm:mb-0">
+                <!-- Usamos el logo subido -->
+                <img src="image_873b13.png" alt="Logo LIONS CUP" class="h-12 w-12 object-contain">
+                <h1 class="text-3xl font-extrabold text-white">
+                    LIONS <span class="text-gold">CUP</span>
+                </h1>
+            </div>
+
+            <!-- Navegación de pestañas (Responsive) -->
+            <nav id="navbar" class="w-full sm:w-auto overflow-x-auto">
+                <ul class="flex justify-center sm:justify-end space-x-2 md:space-x-4 text-sm md:text-base text-gray-400 whitespace-nowrap py-1">
+                    <li onclick="showTab('inicio')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="inicio">Inicio</li>
+                    <li onclick="showTab('equipos')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="equipos">Equipos</li>
+                    <li onclick="showTab('calendario')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="calendario">Calendario</li>
+                    <li onclick="showTab('resultados')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="resultados">Resultados</li>
+                    <li onclick="showTab('clasificaciones')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="clasificaciones">Clasificaciones</li>
+                    <li onclick="showTab('finalfour')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="finalfour">Final Four</li>
+                    <li onclick="showTab('premio')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="premio">Premio</li>
+                    <li onclick="showTab('inscripciones')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="inscripciones">Inscripciones</li>
+                    <li onclick="showTab('cartas')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="cartas">Cartas</li>
+                    <li onclick="showTab('goleadores')" class="tab-item cursor-pointer px-3 py-2 transition duration-200 hover:text-gold" data-tab="goleadores">Máximos G/P</li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container mx-auto px-4 py-8">
+
+        <!-- 1. PESTAÑA INICIO -->
+        <section id="inicio" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Bienvenidos a LIONS CUP</h2>
+            <div id="home-content" class="grid md:grid-cols-2 gap-8">
+                <!-- Detalles del Evento -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold">
+                    <h3 class="text-2xl font-semibold text-white mb-4 flex items-center"><i data-lucide="map-pin" class="text-gold mr-3"></i> Información del Evento</h3>
+                    <div class="space-y-3 text-gray-300">
+                        <p><strong>Lugar:</strong> <span id="home-location"></span></p>
+                        <p><strong>Fechas y Horarios:</strong> <span id="home-dates"></span></p>
+                        <p class="mt-4 p-3 bg-gray-800 rounded-lg">¡Prepárate para la batalla por el trofeo! Este año competimos con 10 equipos.</p>
+                    </div>
+                </div>
+                <!-- Datos del Organizador -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold">
+                    <h3 class="text-2xl font-semibold text-white mb-4 flex items-center"><i data-lucide="user" class="text-gold mr-3"></i> Datos Personales del Organizador</h3>
+                    <div class="space-y-3 text-gray-300">
+                        <p><strong>Nombre:</strong> <span id="home-organizer-name"></span></p>
+                        <p><strong>Contacto:</strong> <span id="home-organizer-contact"></span></p>
+                        <p class="mt-4 p-3 bg-gray-800 rounded-lg">Cualquier duda o consulta sobre el torneo, contacta directamente con la organización.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PESTAÑA EQUIPOS -->
+        <section id="equipos" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Equipos Participantes (10 Equipos)</h2>
+            <div id="teams-list" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Los equipos se renderizarán aquí -->
+            </div>
+        </section>
+
+        <!-- 3. PESTAÑA CALENDARIO -->
+        <section id="calendario" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Calendario de Partidos</h2>
+            
+            <!-- Selector de Día -->
+            <div id="calendar-day-selector" class="flex flex-wrap gap-3 mb-6 p-4 bg-gray-900 rounded-xl shadow-md">
+                <!-- Los botones de día se renderizarán aquí -->
+            </div>
+            
+            <!-- Contenido del Calendario (Partidos por día) -->
+            <div id="calendar-content">
+                <!-- Los partidos se renderizarán aquí -->
+            </div>
+        </section>
+
+        <!-- 4. PESTAÑA RESULTADOS -->
+        <section id="resultados" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Resultados Oficiales</h2>
+            
+            <!-- Selector de Día (Mismo que Calendario) -->
+            <div id="results-day-selector" class="flex flex-wrap gap-3 mb-6 p-4 bg-gray-900 rounded-xl shadow-md">
+                <!-- Los botones de día se renderizarán aquí -->
+            </div>
+            
+            <!-- Contenido de Resultados (Resultados por día) -->
+            <div id="results-content">
+                <!-- Los resultados se renderizarán aquí -->
+            </div>
+        </section>
+
+        <!-- 5. PESTAÑA CLASIFICACIONES -->
+        <section id="clasificaciones" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Clasificación General</h2>
+            <div class="overflow-x-auto bg-gray-900 rounded-xl shadow-gold">
+                <table id="standings-table" class="min-w-full text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="table-header text-white uppercase tracking-wider">
+                            <th scope="col" class="rounded-tl-xl">#</th>
+                            <th scope="col">Equipo</th>
+                            <th scope="col" class="text-center">P</th>
+                            <th scope="col" class="text-center">PJ</th>
+                            <th scope="col" class="rounded-tr-xl text-center">DG</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Las filas de la clasificación se renderizarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-xs text-gray-500">* P = Puntos | PJ = Partidos Jugados | DG = Diferencia de Goles</p>
+        </section>
+
+        <!-- 6. PESTAÑA FINAL FOUR -->
+        <section id="finalfour" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Final Four - La Épica Final</h2>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Semifinal 1 -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold lg:col-span-1">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b pb-2 border-gray-700 flex items-center"><i data-lucide="swords" class="text-gold mr-2"></i> Semifinal 1</h3>
+                    <div id="semifinal1-match" class="text-gray-300">
+                        <!-- Contenido Semifinal 1 -->
+                    </div>
+                </div>
+
+                <!-- Semifinal 2 -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold lg:col-span-1">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b pb-2 border-gray-700 flex items-center"><i data-lucide="swords" class="text-gold mr-2"></i> Semifinal 2</h3>
+                    <div id="semifinal2-match" class="text-gray-300">
+                        <!-- Contenido Semifinal 2 -->
+                    </div>
+                </div>
+
+                <!-- Final -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold lg:col-span-3">
+                    <h3 class="text-2xl font-bold text-gold mb-4 border-b pb-2 border-gold flex items-center justify-center"><i data-lucide="trophy" class="mr-2"></i> ¡GRAN FINAL!</h3>
+                    <div id="final-match" class="text-gray-300 text-center">
+                        <!-- Contenido Final -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- PESTAÑA: PREMIO (Sin Fondo Total) -->
+        <section id="premio" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Premio Metálico</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Primer Puesto -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold text-center">
+                    <h3 class="text-3xl font-extrabold text-gold mb-4 flex items-center justify-center"><i data-lucide="trophy" class="w-8 h-8 mr-3"></i> Campeón</h3>
+                    <p class="text-6xl font-black text-white" id="prize-first">
+                        <!-- Se renderiza desde JS -->
+                    </p>
+                    <p class="text-gray-400 mt-2">¡La gloria y el gran premio en efectivo!</p>
+                </div>
+                <!-- Segundo Puesto -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-md text-center">
+                    <h3 class="text-3xl font-extrabold text-white mb-4 flex items-center justify-center"><i data-lucide="medal" class="w-8 h-8 mr-3 text-gray-400"></i> Subcampeón</h3>
+                    <p class="text-6xl font-black text-gray-300" id="prize-second">
+                        <!-- Se renderiza desde JS -->
+                    </p>
+                    <p class="text-gray-400 mt-2">¡Un gran reconocimiento a la segunda plaza!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: INSCRIPCIONES -->
+        <section id="inscripciones" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Inscripciones y Cuotas</h2>
+            <div class="p-8 bg-gray-900 rounded-xl shadow-gold text-center">
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center justify-center">
+                    <i data-lucide="wallet" class="w-6 h-6 mr-3 text-gold"></i>
+                    Coste de Participación
+                </h3>
+                <p class="text-4xl font-black text-gold mb-2">
+                    30€
+                </p>
+                <p class="text-white text-lg font-semibold">
+                    por Equipo
+                </p>
+                <p class="text-gray-400 mt-4 max-w-lg mx-auto">
+                    El pago de la inscripción es obligatorio para confirmar la plaza de los 10 equipos en el torneo LIONS CUP y debe realizarse antes de la fecha límite establecida por la organización.
+                </p>
+            </div>
+        </section>
+
+        <!-- PESTAÑA: CARTAS MÁGICAS -->
+        <section id="cartas" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Cartas Mágicas del Torneo</h2>
+            <div id="cards-list" class="space-y-4">
+                <!-- Las cartas se renderizarán aquí -->
+            </div>
+        </section>
+
+        <!-- 8. PESTAÑA MÁXIMO GOLEADOR Y MEJOR PORTERO (Portero sin métrica) -->
+        <section id="goleadores" class="tab-content">
+            <h2 class="text-4xl font-bold text-gold mb-6 border-b pb-2 border-gray-800">Reconocimientos Individuales</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Máximo Goleador -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold">
+                    <h3 class="text-2xl font-bold text-white mb-4 border-b pb-2 border-gray-700 flex items-center"><i data-lucide="goal" class="text-gold mr-2"></i> Máximo Goleador</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left">
+                            <thead class="table-header text-white uppercase">
+                                <tr>
+                                    <th scope="col" class="rounded-tl-lg">#</th>
+                                    <th scope="col">Jugador</th>
+                                    <th scope="col">Equipo</th>
+                                    <th scope="col" class="rounded-tr-lg text-center">Goles</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-scorers-body" class="text-gray-300">
+                                <!-- Goleadores se renderizarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Mejor Portero (Sin métrica de Goles Encajados / P. a Cero) -->
+                <div class="p-6 bg-gray-900 rounded-xl shadow-gold">
+                    <h3 class="text-2xl font-bold text-white mb-4 border-b pb-2 border-gray-700 flex items-center"><i data-lucide="shield-half" class="text-gold mr-2"></i> Mejor Portero</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left">
+                            <thead class="table-header text-white uppercase">
+                                <tr>
+                                    <th scope="col" class="rounded-tl-lg">#</th>
+                                    <th scope="col" colspan="2">Jugador</th>
+                                    <th scope="col" class="rounded-tr-lg text-center">Equipo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="best-gk-body" class="text-gray-300">
+                                <!-- Porteros se renderizarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 mt-12 p-6 text-center text-xs text-gray-500">
+        &copy; 2025 LIONS CUP. Diseñado con pasión por el fútbol.
+    </footer>
+
+    <script>
+        // Inicializa los iconos de Lucide
+        lucide.createIcons();
+
+        // ----------------------------------------------------
+        // 1. DATA ESTRUCTURADA DEL TORNEO
+        // ----------------------------------------------------
+        const tournamentData = {
+            // 1. INICIO: Información general y organizador
+            location: "Polideportivo Municipal de Móstoles, Madrid",
+            dates: "2, 3 y 4 de Diciembre de 2025. Horario: 18:00h - 22:00h",
+            organizer: {
+                name: "Tu Nombre (Organizador Principal)",
+                contact: "torneo.lionscup@ejemplo.com | Tlf: 6XX 123 456"
+            },
+            
+            // PREMIOS EN METÁLICO
+            prizes: {
+                first: "500€",
+                second: "200€",
+            },
+
+            // 2. EQUIPOS (10 equipos)
+            teams: [
+                { name: "Leones Dorados", logo: "👑" },
+                { name: "Águilas Negras", logo: "🦅" },
+                { name: "Rayo FC", logo: "⚡" },
+                { name: "Deportivo Élite", logo: "🏆" },
+                { name: "Spartans Unidos", logo: "🛡️" },
+                { name: "Fénix Rising", logo: "🔥" },
+                { name: "Gladiadores", logo: "⚔️" },
+                { name: "Invencibles CF", logo: "💪" },
+                { name: "Vikingos del Norte", logo: "🪓" }, 
+                { name: "Panteras Azules", logo: "🐆" }, 
+            ],
+
+            // 5. CLASIFICACIONES (Datos Mockup para 10 equipos)
+            standings: [
+                { team: "Leones Dorados", points: 7, played: 3, gd: 4 },
+                { team: "Águilas Negras", points: 6, played: 3, gd: 2 },
+                { team: "Spartans Unidos", points: 5, played: 3, gd: 1 },
+                { team: "Vikingos del Norte", points: 4, played: 3, gd: 0 },
+                { team: "Rayo FC", points: 4, played: 3, gd: -1 },
+                { team: "Fénix Rising", points: 3, played: 3, gd: -1 },
+                { team: "Panteras Azules", points: 2, played: 3, gd: -2 },
+                { team: "Gladiadores", points: 2, played: 3, gd: -2 },
+                { team: "Invencibles CF", points: 1, played: 3, gd: -3 },
+                { team: "Deportivo Élite", points: 0, played: 3, gd: -6 },
+            ].sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.gd - a.gd;
+            }),
+
+            // 3 & 4. CALENDARIO & RESULTADOS (Añadido 5º partido por día)
+            matches: {
+                "2 de Diciembre": [
+                    { time: "18:00h", teamA: "Leones Dorados", teamB: "Águilas Negras", scoreA: 2, scoreB: 1, status: "Finalizado" },
+                    { time: "19:00h", teamA: "Rayo FC", teamB: "Deportivo Élite", scoreA: 3, scoreB: 3, status: "Finalizado" },
+                    { time: "20:00h", teamA: "Spartans Unidos", teamB: "Fénix Rising", scoreA: 1, scoreB: 0, status: "Finalizado" },
+                    { time: "21:00h", teamA: "Gladiadores", teamB: "Vikingos del Norte", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "22:00h", teamA: "Invencibles CF", teamB: "Panteras Azules", scoreA: 0, scoreB: 0, status: "Próximo" }, // Partido 5
+                ],
+                "3 de Diciembre": [
+                    { time: "18:00h", teamA: "Deportivo Élite", teamB: "Panteras Azules", scoreA: 0, scoreB: 5, status: "Finalizado" },
+                    { time: "19:00h", teamA: "Águilas Negras", teamB: "Rayo FC", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "20:00h", teamA: "Invencibles CF", teamB: "Spartans Unidos", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "21:00h", teamA: "Fénix Rising", teamB: "Leones Dorados", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "22:00h", teamA: "Vikingos del Norte", teamB: "Gladiadores", scoreA: 0, scoreB: 0, status: "Próximo" }, // Partido 5
+                ],
+                "4 de Diciembre": [
+                    { time: "18:00h", teamA: "Vikingos del Norte", teamB: "Rayo FC", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "19:00h", teamA: "Panteras Azules", teamB: "Deportivo Élite", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "20:00h", teamA: "Gladiadores", teamB: "Invencibles CF", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "21:00h", teamA: "Spartans Unidos", teamB: "Águilas Negras", scoreA: 0, scoreB: 0, status: "Próximo" },
+                    { time: "22:00h", teamA: "Leones Dorados", teamB: "Fénix Rising", scoreA: 0, scoreB: 0, status: "Próximo" }, // Partido 5
+                ],
+            },
+
+            // 6. FINAL FOUR
+            finalFour: {
+                semifinal1: { time: "19:00h", teamA: "1º Clasificado", teamB: "4º Clasificado", scoreA: "-", scoreB: "-", status: "Por jugar" },
+                semifinal2: { time: "20:00h", teamA: "2º Clasificado", teamB: "3º Clasificado", scoreA: "-", scoreB: "-", status: "Por jugar" },
+                final: { time: "21:30h", teamA: "Ganador Semifinal 1", teamB: "Ganador Semifinal 2", scoreA: "-", scoreB: "-", status: "Por jugar" }
+            },
+
+            // 7. CARTAS (Cartas Mágicas)
+            cards: [
+                { name: "Penalti Fantasma", description: "Otorga un penalti aleatorio a favor en el próximo partido. (Usable una vez por torneo)." },
+                { name: "Robo de Carta", description: "Permite anular una carta mágica rival o robar una no utilizada. (Se juega antes del partido)." },
+                { name: "Cebada al Portero", description: "El portero rival tiene un -50% de efectividad en el próximo partido. (Una jornada)." },
+                { name: "Gol de Oro", description: "Si el partido acaba en empate, el equipo gana automáticamente. (Usable una vez)." },
+                { name: "Inmunidad", description: "Anula la posibilidad de recibir una carta mágica rival durante una jornada completa." },
+            ],
+
+            // 8. PREMIOS INDIVIDUALES
+            topScorers: [
+                { name: "Leo Messi", team: "Leones Dorados", goals: 5 },
+                { name: "Cristiano R.", team: "Águilas Negras", goals: 3 },
+                { name: "Kylian M.", team: "Rayo FC", goals: 2 },
+                { name: "Zlatan I.", team: "Vikingos del Norte", goals: 2 },
+            ],
+            // Mejor Portero (Lista simple sin métrica, solo reconocimiento)
+            bestGoalkeepers: [
+                { name: "Marc T.", team: "Deportivo Élite" },
+                { name: "Jan O.", team: "Leones Dorados" },
+                { name: "Thibaut C.", team: "Águilas Negras" },
+                { name: "David D.", team: "Panteras Azules" },
+            ]
+        };
+
+        let currentCalendarDay = Object.keys(tournamentData.matches)[0];
+        let currentResultsDay = Object.keys(tournamentData.matches)[0];
+        
+        // ----------------------------------------------------
+        // 2. FUNCIONES DE RENDERIZADO
+        // ----------------------------------------------------
+
+        // Función para cambiar de pestaña
+        function showTab(tabId) {
+            // Ocultar todos los contenidos de las pestañas
+            document.querySelectorAll('.tab-content').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Quitar el estilo activo de todas las pestañas
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('tab-active');
+            });
+
+            // Mostrar el contenido de la pestaña seleccionada
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.style.display = 'block';
+            }
+
+            // Aplicar el estilo activo al elemento de la barra de navegación
+            const navItem = document.querySelector(`.tab-item[data-tab="${tabId}"]`);
+            if (navItem) {
+                navItem.classList.add('tab-active');
+            }
+            
+            // Re-renderizar iconos en el contenido de la pestaña activa
+            lucide.createIcons();
+        }
+
+        // --- 1. INICIO ---
+        function renderInicio() {
+            document.getElementById('home-location').textContent = tournamentData.location;
+            document.getElementById('home-dates').textContent = tournamentData.dates;
+            document.getElementById('home-organizer-name').textContent = tournamentData.organizer.name;
+            document.getElementById('home-organizer-contact').textContent = tournamentData.organizer.contact;
+        }
+
+        // --- 2. EQUIPOS ---
+        function renderEquipos() {
+            const teamsList = document.getElementById('teams-list');
+            teamsList.innerHTML = tournamentData.teams.map(team => `
+                <div class="p-4 bg-gray-900 rounded-xl flex items-center space-x-4 shadow-sm hover:shadow-gold transition duration-300">
+                    <span class="text-3xl">${team.logo}</span>
+                    <p class="text-lg font-semibold text-white">${team.name}</p>
+                </div>
+            `).join('');
+        }
+        
+        // --- PREMIO (Sin Fondo Total) ---
+        function renderPremio() {
+            document.getElementById('prize-first').textContent = tournamentData.prizes.first;
+            document.getElementById('prize-second').textContent = tournamentData.prizes.second;
+        }
+
+        // --- CALENDARIO y RESULTADOS (Funciones compartidas) ---
+        
+        function renderDaySelector(selectorId, currentDay, action) {
+            const selector = document.getElementById(selectorId);
+            selector.innerHTML = Object.keys(tournamentData.matches).map(day => {
+                const isActive = day === currentDay;
+                return `
+                    <button onclick="${action}('${day}', this)" 
+                            class="px-4 py-2 rounded-full text-sm transition duration-200 
+                            ${isActive ? 'bg-gold-light text-black font-bold shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}">
+                        ${day}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderMatches(day, containerId, isResultsView) {
+            const matches = tournamentData.matches[day];
+            const container = document.getElementById(containerId);
+
+            container.innerHTML = matches.map(match => {
+                const statusColor = match.status === 'Finalizado' ? 'text-green-500' : 'text-yellow-500';
+                const scoreDisplay = isResultsView ? `
+                    <span class="font-bold text-lg">${match.scoreA}</span>
+                    <span class="mx-2 text-gray-500">-</span>
+                    <span class="font-bold text-lg">${match.scoreB}</span>
+                ` : 'VS';
+
+                return `
+                    <div class="p-5 mb-4 bg-gray-900 rounded-xl shadow-md grid grid-cols-5 items-center gap-2 border-l-4 ${isResultsView ? 'border-green-500' : 'border-yellow-500'}">
+                        <!-- Hora y Estado -->
+                        <div class="col-span-1 text-center space-y-1">
+                            <p class="text-sm text-gray-400">Hora inicio</p>
+                            <p class="font-mono text-white text-lg">${match.time}</p>
+                        </div>
+                        
+                        <!-- Equipo A -->
+                        <p class="col-span-2 text-right font-bold text-white text-base truncate pr-2">${match.teamA}</p>
+                        
+                        <!-- Marcador/VS -->
+                        <div class="col-span-1 text-center flex justify-center items-center">
+                            ${scoreDisplay}
+                        </div>
+                        
+                        <!-- Equipo B -->
+                        <p class="col-span-1 text-left font-bold text-white text-base truncate pl-2">${match.teamB}</p>
+                        
+                        <div class="col-span-5 text-center mt-2">
+                           <span class="text-xs font-semibold ${statusColor}">${match.status}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function changeCalendarDay(day, button) {
+            currentCalendarDay = day;
+            document.querySelectorAll('#calendar-day-selector button').forEach(btn => {
+                 btn.classList.remove('bg-gold-light', 'text-black', 'font-bold', 'shadow-lg');
+                 btn.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+            });
+            button.classList.add('bg-gold-light', 'text-black', 'font-bold', 'shadow-lg');
+            renderMatches(currentCalendarDay, 'calendar-content', false);
+        }
+
+        function changeResultsDay(day, button) {
+            currentResultsDay = day;
+            document.querySelectorAll('#results-day-selector button').forEach(btn => {
+                 btn.classList.remove('bg-gold-light', 'text-black', 'font-bold', 'shadow-lg');
+                 btn.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+            });
+            button.classList.add('bg-gold-light', 'text-black', 'font-bold', 'shadow-lg');
+            renderMatches(currentResultsDay, 'results-content', true);
+        }
+
+        // --- 5. CLASIFICACIONES ---
+        function renderClasificaciones() {
+            const standingsBody = document.getElementById('standings-body');
+            // Las primeras 4 posiciones son las que clasificarían a Final Four
+            standingsBody.innerHTML = tournamentData.standings.map((team, index) => `
+                <tr class="table-row-hover ${index < 4 ? 'bg-gray-800 border-l-4 border-gold' : 'border-l-4 border-gray-700'}">
+                    <td class="font-bold text-center">${index + 1}</td>
+                    <td class="font-semibold text-white">${team.team}</td>
+                    <td class="text-center text-gold font-extrabold">${team.points}</td>
+                    <td class="text-center">${team.played}</td>
+                    <td class="text-center">${team.gd}</td>
+                </tr>
+            `).join('');
+        }
+
+        // --- 6. FINAL FOUR ---
+        function renderFinalFour() {
+            const renderMatch = (match) => `
+                <p class="text-sm text-gray-400 mb-2 font-mono"><i data-lucide="clock" class="w-4 h-4 inline mr-1"></i> ${match.time}</p>
+                <div class="text-center my-4">
+                    <p class="text-xl font-bold text-white">${match.teamA}</p>
+                    <p class="text-gold text-2xl font-extrabold my-2">VS</p>
+                    <p class="text-xl font-bold text-white">${match.teamB}</p>
+                </div>
+                <p class="text-center text-sm mt-3 ${match.status === 'Por jugar' ? 'text-yellow-500' : 'text-green-500'}">${match.status}</p>
+            `;
+
+            document.getElementById('semifinal1-match').innerHTML = renderMatch(tournamentData.finalFour.semifinal1);
+            document.getElementById('semifinal2-match').innerHTML = renderMatch(tournamentData.finalFour.semifinal2);
+            document.getElementById('final-match').innerHTML = renderMatch(tournamentData.finalFour.final);
+            lucide.createIcons(); // Vuelve a renderizar iconos
+        }
+
+        // --- 7. CARTAS (Actualizado a Mágicas) ---
+        function renderCartas() {
+            const cardsList = document.getElementById('cards-list');
+            
+            cardsList.innerHTML = tournamentData.cards.map((card, index) => {
+                const icon = ['wand-2', 'shuffle', 'beer', 'star', 'shield'][index % 5]; // Iconos mágicos
+                
+                return `
+                    <div class="p-4 bg-gray-900 rounded-xl flex items-center space-x-4 shadow-md border-l-4 border-purple-500 hover:border-gold transition duration-300">
+                        <!-- Detalles de la Carta -->
+                        <i data-lucide="${icon}" class="w-8 h-8 text-purple-500"></i>
+                        <div>
+                            <p class="font-bold text-white">${card.name}</p>
+                            <p class="text-sm text-gray-400">${card.description}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        // --- 8. PREMIOS INDIVIDUALES (Máximos G/P - Portero sin métrica) ---
+        function renderGoleadores() {
+            const scorersBody = document.getElementById('top-scorers-body');
+            scorersBody.innerHTML = tournamentData.topScorers.map((player, index) => `
+                <tr class="table-row-hover">
+                    <td class="font-bold text-center">${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.team}</td>
+                    <td class="text-center text-gold font-extrabold">${player.goals}</td>
+                </tr>
+            `).join('');
+
+            const gkBody = document.getElementById('best-gk-body');
+            
+            // Renderiza la tabla de Mejor Portero sin columna de métrica
+            gkBody.innerHTML = tournamentData.bestGoalkeepers.map((player, index) => `
+                <tr class="table-row-hover">
+                    <td class="font-bold text-center">${index + 1}</td>
+                    <td colspan="2">${player.name}</td>
+                    <td class="text-center">${player.team}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ----------------------------------------------------
+        // 3. INICIALIZACIÓN
+        // ----------------------------------------------------
+        
+        function initApp() {
+            // Renderizar datos estáticos
+            renderInicio();
+            renderEquipos();
+            renderClasificaciones();
+            renderFinalFour();
+            renderPremio();
+            renderCartas();
+            renderGoleadores();
+            
+            // Renderizar selectores de día de Calendario y Resultados
+            renderDaySelector('calendar-day-selector', currentCalendarDay, 'changeCalendarDay');
+            renderDaySelector('results-day-selector', currentResultsDay, 'changeResultsDay');
+
+            // Inicializar el contenido del primer día
+            renderMatches(currentCalendarDay, 'calendar-content', false);
+            renderMatches(currentResultsDay, 'results-content', true);
+
+            // Mostrar la pestaña de inicio por defecto
+            showTab('inicio');
+        }
+
+        // Asegurarse de que la aplicación se inicia una vez el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
